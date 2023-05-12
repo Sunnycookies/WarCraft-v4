@@ -445,18 +445,6 @@ public:
 
     void print_self() { cout << "city " << index; }
 
-    void clear_weapons()
-    {
-        for (auto p = weapon_pool.begin(); p != weapon_pool.end(); ++p)
-        {
-            if (p->second)
-            {
-                delete p->second;
-            }
-        }
-        weapon_pool.clear();
-    }
-
     void lion_escape()
     {
         for (int i = 0; i < 2; ++i)
@@ -957,7 +945,7 @@ void City::raise_flag()
             pWarriors[i]->pick_weapon();
         }
     }
-    clear_weapons(), warrior_earn_elements();
+    weapon_pool.clear(), warrior_earn_elements();
     if (state == Nothing || curr_win != prev_win || flag == curr_win || curr_win == neutral)
     {
         return;
