@@ -423,21 +423,19 @@ public:
     City()
     {
         index = ++count;
-        for (int i = 0; i < 2; ++i)
-        {
-            pWarriors[i] = nullptr;
-        }
+        pWarriors[red] = pWarriors[blue] = nullptr;
     }
 
     ~City()
     {
         --count;
-        for (int i = 0; i < 2; ++i)
+        if (pWarriors[red])
         {
-            if (pWarriors[i])
-            {
-                delete pWarriors[i];
-            }
+            delete pWarriors[red];
+        }
+        if (pWarriors[blue])
+        {
+            delete pWarriors[blue];
         }
     }
 
@@ -449,16 +447,13 @@ public:
     {
         for (int i = 0; i < 2; ++i)
         {
-            if (!pWarriors[i] || pWarriors[i]->type != lion)
+            if (!pWarriors[i] || !pWarriors[i]->should_escape())
             {
                 continue;
             }
-            if (pWarriors[i]->should_escape())
-            {
-                print_time(), pWarriors[i]->print_self();
-                cout << " ran away" << endl;
-                delete pWarriors[i];
-            }
+            print_time(), pWarriors[i]->print_self();
+            cout << " ran away" << endl;
+            delete pWarriors[i];
         }
     }
 
@@ -486,16 +481,13 @@ public:
 
     void warrior_arrive()
     {
-        for (int i = 0; i < 2; ++i)
+        if (pWarriors[red] && pWarriors[red]->move)
         {
-            if (!pWarriors[i])
-            {
-                continue;
-            }
-            if (pWarriors[i]->move)
-            {
-                pWarriors[i]->report_arrival();
-            }
+            pWarriors[red]->report_arrival();
+        }
+        if (pWarriors[blue] && pWarriors[blue]->move)
+        {
+            pWarriors[blue]->report_arrival();
         }
     }
 
@@ -987,8 +979,8 @@ inline void reset_record_func(City *city) { city->reset_record(); }
 
 int main()
 {
-    freopen("data.in", "r", stdin);
-    freopen("WarCraft.out", "w", stdout);
+    // freopen("data.in", "r", stdin);
+    // freopen("WarCraft.out", "w", stdout);
     int cases;
     cin >> cases;
     for (int k = 1; k <= cases; ++k)
