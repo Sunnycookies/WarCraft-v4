@@ -987,8 +987,8 @@ inline void reset_record_func(City *city) { city->reset_record(); }
 
 int main()
 {
-    // freopen("data.in", "r", stdin);
-    // freopen("WarCraft.out", "w", stdout);
+    freopen("data.in", "r", stdin);
+    freopen("WarCraft.out", "w", stdout);
     int cases;
     cin >> cases;
     for (int k = 1; k <= cases; ++k)
