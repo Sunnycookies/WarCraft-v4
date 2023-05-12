@@ -2,8 +2,6 @@
 #include <map>
 #include <iomanip>
 
-using namespace std;
-
 const int nWeapons = 3;
 const int nWarriors = 5;
 
@@ -26,7 +24,7 @@ const Result Lose = 1 << 2;
 const Result Tie = 1 << 3;
 const Result Win = 1 << 4;
 
-inline void print_time() { cout << setw(3) << setfill('0') << right << hour << ':' << setw(2) << setfill('0') << right << minute << ' '; }
+inline void print_time() { std::cout << std::setw(3) << std::setfill('0') << std::right << hour << ':' << std::setw(2) << std::setfill('0') << std::right << minute << ' '; }
 
 inline bool time_not_valid() { return 60 * hour + minute > time_limit; }
 
@@ -85,7 +83,7 @@ public:
 
     bool is_used_up() override { return !attack_value; }
 
-    void print_self() override { cout << "sword(" << attack_value << ')'; }
+    void print_self() override { std::cout << "sword(" << attack_value << ')'; }
 };
 class Bomb : public Weapon
 {
@@ -99,7 +97,7 @@ public:
 
     bool is_used_up() override { return _is_used_up; }
 
-    void print_self() override { cout << "bomb"; }
+    void print_self() override { std::cout << "bomb"; }
 };
 class Arrow : public Weapon
 {
@@ -113,13 +111,13 @@ public:
 
     bool is_used_up() override { return !left_num; }
 
-    void print_self() override { cout << "arrow(" << left_num << ')'; }
+    void print_self() override { std::cout << "arrow(" << left_num << ')'; }
 };
 
 class Warrior
 {
 protected:
-    static string warrior_name[nWarriors];
+    static std::string warrior_name[nWarriors];
 
     Headquarter *pHeadquarter;
 
@@ -171,7 +169,7 @@ public:
         pWeapons[weapon] = nullptr;
     }
 
-    void hurted(const int &value) { elements = max(0, elements - value); }
+    void hurted(const int &value) { elements = std::max(0, elements - value); }
 
     void gain_elements(const int &value) { elements += value; }
 
@@ -225,27 +223,27 @@ public:
     void report_shot(Warrior *enemy)
     {
         print_time(), print_self();
-        cout << " shot";
+        std::cout << " shot";
         if (enemy->is_dead())
         {
-            cout << " and killed ";
+            std::cout << " and killed ";
             enemy->print_self();
         }
-        cout << endl;
+        std::cout << std::endl;
     }
 
     void report_weapons()
     {
         print_time(), print_self();
         bool has_weapons = 0, first_weapon = 1;
-        cout << " has ";
+        std::cout << " has ";
         for (int i = 0; i < nWeapons; ++i)
         {
             has_weapons |= pWeapons[i] != nullptr;
         }
         if (!has_weapons)
         {
-            cout << "no weapon" << endl;
+            std::cout << "no weapon" << std::endl;
             return;
         }
         for (int i = nWeapons - 1; i >= 0; --i)
@@ -260,11 +258,11 @@ public:
             }
             else
             {
-                cout << ',';
+                std::cout << ',';
             }
             pWeapons[i]->print_self();
         }
-        cout << endl;
+        std::cout << std::endl;
     }
 
     virtual void pick_weapon();
@@ -314,7 +312,7 @@ public:
     Dragon(Headquarter *pHeadquarter, const int &id, const double &_morale) : Warrior(pHeadquarter, id, dragon), morale(_morale)
     {
         get_weapon(weapon_type(id % nWeapons));
-        cout << "Its morale is " << fixed << setprecision(2) << morale << endl;
+        std::cout << "Its morale is " << std::fixed << std::setprecision(2) << morale << std::endl;
     }
 
     void after_attack(Warrior *enemy, const Result &result) override;
@@ -353,7 +351,7 @@ public:
         if ((count_steps >> 1) & 1)
         {
             count_steps >>= 2;
-            elements = max(elements - 9, 1);
+            elements = std::max(elements - 9, 1);
             force += 20;
         }
     }
@@ -369,7 +367,7 @@ public:
     Lion(Headquarter *pHeadquarter, const int &id, const int &_loyalty) : Warrior(pHeadquarter, id, lion), loyalty(_loyalty)
     {
         record_elements = elements;
-        cout << "Its loyalty is " << loyalty << endl;
+        std::cout << "Its loyalty is " << loyalty << std::endl;
     }
 
     void refresh_record_elements() override { record_elements = elements; }
@@ -417,7 +415,7 @@ private:
 
     bool blue_report_shot = 0;
 
-    map<weapon_type, Weapon *> weapon_pool;
+    std::map<weapon_type, Weapon *> weapon_pool;
 
 public:
     City()
@@ -441,7 +439,7 @@ public:
 
     city_type active_attacker_type() { return flag == neutral ? city_type((index & 1) ^ 1) : flag; }
 
-    void print_self() { cout << "city " << index; }
+    void print_self() { std::cout << "city " << index; }
 
     void lion_escape()
     {
@@ -452,7 +450,7 @@ public:
                 continue;
             }
             print_time(), pWarriors[i]->print_self();
-            cout << " ran away" << endl;
+            std::cout << " ran away" << std::endl;
             delete pWarriors[i];
         }
     }
@@ -604,7 +602,7 @@ public:
 class Headquarter
 {
 private:
-    static string headquarter_name[2];
+    static std::string headquarter_name[2];
 
     static warrior_type produce_order[2][nWarriors];
 
@@ -616,7 +614,7 @@ private:
 
     int elements = init_elements, warriors = 0, index = 0, elements_buffer = 0;
 
-    map<int, Warrior *> pWarriors;
+    std::map<int, Warrior *> pWarriors;
 
 public:
     Headquarter(City *city, const city_type &_type) : pCity(city), type(_type)
@@ -658,7 +656,7 @@ public:
     void report_elements()
     {
         print_time();
-        cout << elements << " elements in " << headquarter_name[type] << " headquarter" << endl;
+        std::cout << elements << " elements in " << headquarter_name[type] << " headquarter" << std::endl;
     }
 
     void report_weapons()
@@ -707,7 +705,7 @@ public:
     void report_conquer()
     {
         print_time();
-        cout << headquarter_name[type ^ 1] << " headquarter was taken" << endl;
+        std::cout << headquarter_name[type ^ 1] << " headquarter was taken" << std::endl;
     }
 
     friend class Warrior;
@@ -715,13 +713,13 @@ public:
     friend class City;
 };
 
-string Warrior::warrior_name[nWarriors] = {"dragon", "ninja", "iceman", "lion", "wolf"};
+std::string Warrior::warrior_name[nWarriors] = {"dragon", "ninja", "iceman", "lion", "wolf"};
 
 int Warrior::elements_value[nWarriors], Warrior::force_value[nWarriors];
 
 int City::count = -1;
 
-string Headquarter::headquarter_name[2] = {"red", "blue"};
+std::string Headquarter::headquarter_name[2] = {"red", "blue"};
 
 warrior_type Headquarter::produce_order[2][nWarriors] = {{iceman, lion, wolf, ninja, dragon}, {lion, dragon, ninja, iceman, wolf}};
 
@@ -735,7 +733,7 @@ Warrior::Warrior(Headquarter *headquarter, const int &_id, const warrior_type &_
         pWeapons[i] = nullptr;
     }
     print_time(), print_self();
-    cout << " born" << endl;
+    std::cout << " born" << std::endl;
 }
 
 Warrior::~Warrior()
@@ -752,11 +750,11 @@ Warrior::~Warrior()
     pHeadquarter->pWarriors.erase(id);
 }
 
-void Warrior::print_self() { cout << Headquarter::headquarter_name[pHeadquarter->type] << ' ' << warrior_name[type] << ' ' << id; }
+void Warrior::print_self() { std::cout << Headquarter::headquarter_name[pHeadquarter->type] << ' ' << warrior_name[type] << ' ' << id; }
 
 void Warrior::pick_weapon()
 {
-    map<weapon_type, Weapon *> &pool = pCity->weapon_pool;
+    std::map<weapon_type, Weapon *> &pool = pCity->weapon_pool;
     for (int i = 0; i < nWeapons; ++i)
     {
         if (pWeapons[i])
@@ -797,9 +795,9 @@ bool Warrior::try_to_use_bomb(Warrior *enemy, const city_type &active)
         pWeapons[bomb]->utilize();
         try_to_destroy_weapon(bomb);
         print_time(), print_self();
-        cout << " used a bomb and killed ";
+        std::cout << " used a bomb and killed ";
         enemy->print_self();
-        cout << endl;
+        std::cout << std::endl;
         return 1;
     }
     return 0;
@@ -816,11 +814,11 @@ void Warrior::actively_attack(Warrior *enemy)
     }
     enemy->hurted(attack_value);
     print_time(), print_self();
-    cout << " attacked ";
+    std::cout << " attacked ";
     enemy->print_self();
-    cout << " in ";
+    std::cout << " in ";
     pCity->print_self();
-    cout << " with " << elements << " elements and force " << force << endl;
+    std::cout << " with " << elements << " elements and force " << force << std::endl;
     if (enemy->is_dead())
     {
         enemy->report_death();
@@ -838,11 +836,11 @@ void Warrior::passively_attack(Warrior *enemy)
     }
     enemy->hurted(attack_value);
     print_time(), print_self();
-    cout << " fought back against ";
+    std::cout << " fought back against ";
     enemy->print_self();
-    cout << " in ";
+    std::cout << " in ";
     pCity->print_self();
-    cout << endl;
+    std::cout << std::endl;
     if (enemy->is_dead())
     {
         enemy->report_death();
@@ -853,15 +851,15 @@ void Warrior::send_elements_to_headquarter(const int &value)
 {
     pHeadquarter->elements_buffer += value;
     print_time(), print_self();
-    cout << " earned " << value << " elements for his headquarter" << endl;
+    std::cout << " earned " << value << " elements for his headquarter" << std::endl;
 }
 
 void Warrior::report_death()
 {
     print_time(), print_self();
-    cout << " was killed in ";
+    std::cout << " was killed in ";
     pCity->print_self();
-    cout << endl;
+    std::cout << std::endl;
 }
 
 bool Warrior::march()
@@ -885,14 +883,14 @@ void Warrior::report_arrival()
     move = 0, print_time(), print_self();
     if (is_at_target_city())
     {
-        cout << " reached " << Headquarter::headquarter_name[pHeadquarter->type ^ 1] << " headquarter";
+        std::cout << " reached " << Headquarter::headquarter_name[pHeadquarter->type ^ 1] << " headquarter";
     }
     else
     {
-        cout << " marched to ";
+        std::cout << " marched to ";
         pCity->print_self();
     }
-    cout << " with " << elements << " elements and force " << force << endl;
+    std::cout << " with " << elements << " elements and force " << force << std::endl;
 }
 
 bool Warrior::is_at_target_city() { return pCity->index == nCities + 1 - pHeadquarter->pCity->index; }
@@ -915,9 +913,9 @@ void Dragon::after_attack(Warrior *enemy, const Result &result)
     if (morale > 0.8)
     {
         print_time(), print_self();
-        cout << " yelled in ";
+        std::cout << " yelled in ";
         pCity->print_self();
-        cout << endl;
+        std::cout << std::endl;
     }
 }
 
@@ -944,9 +942,9 @@ void City::raise_flag()
     }
     flag = prev_win;
     print_time();
-    cout << Headquarter::headquarter_name[flag] << " flag raised in ";
+    std::cout << Headquarter::headquarter_name[flag] << " flag raised in ";
     print_self();
-    cout << endl;
+    std::cout << std::endl;
 }
 
 bool for_all_cities(City *start, City *finish, void (*f)(City *), const int &time_increment = 0)
@@ -979,23 +977,21 @@ inline void reset_record_func(City *city) { city->reset_record(); }
 
 int main()
 {
-    // freopen("data.in", "r", stdin);
-    // freopen("WarCraft.out", "w", stdout);
     int cases;
-    cin >> cases;
+    std::cin >> cases;
     for (int k = 1; k <= cases; ++k)
     {
         hour = minute = 0;
-        cin >> init_elements >> nCities >> arrow_attack >> loyalty_decrease >> time_limit;
+        std::cin >> init_elements >> nCities >> arrow_attack >> loyalty_decrease >> time_limit;
         for (int i = 0; i < nWarriors; ++i)
         {
-            cin >> Warrior::elements_value[i];
+            std::cin >> Warrior::elements_value[i];
         }
         for (int i = 0; i < nWarriors; ++i)
         {
-            cin >> Warrior::force_value[i];
+            std::cin >> Warrior::force_value[i];
         }
-        cout << "Case " << k << ':' << endl;
+        std::cout << "Case " << k << ':' << std::endl;
 
         City *city = new City[nCities + 2], *start = city, *finish = city + nCities + 2;
         Headquarter Red(start, red), Blue(finish - 1, blue);
