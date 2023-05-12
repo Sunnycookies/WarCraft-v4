@@ -437,6 +437,18 @@ public:
         }
     }
 
+    void clear_weapons()
+    {
+        for (auto p = weapon_pool.begin(); p != weapon_pool.end(); ++p)
+        {
+            if (p->second)
+            {
+                delete p->second;
+            }
+        }
+        weapon_pool.clear();
+    }
+
     city_type active_attacker_type() { return flag == neutral ? city_type((index & 1) ^ 1) : flag; }
 
     void print_self() { std::cout << "city " << index; }
@@ -935,7 +947,7 @@ void City::raise_flag()
             pWarriors[i]->pick_weapon();
         }
     }
-    weapon_pool.clear(), warrior_earn_elements();
+    clear_weapons(), warrior_earn_elements();
     if (state == Nothing || curr_win != prev_win || flag == curr_win || curr_win == neutral)
     {
         return;
@@ -977,6 +989,8 @@ inline void reset_record_func(City *city) { city->reset_record(); }
 
 int main()
 {
+    freopen("data.in", "r", stdin);
+    freopen("WarCraft.out", "w", stdout);
     int cases;
     std::cin >> cases;
     for (int k = 1; k <= cases; ++k)
